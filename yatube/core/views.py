@@ -15,5 +15,5 @@ def page_forbidden(request, exception):
     render(request, 'core/403.html', status=403)
 
 
-def page_server_error(request, exception):
+def page_server_error(request):
     render(request, 'core/500.html', status=500)

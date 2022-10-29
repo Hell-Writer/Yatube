@@ -1,16 +1,18 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, render, redirect
-from .forms import PostForm, CommentForm
-from .models import Group, Post, User, Comment, Follow
+from django.shortcuts import get_object_or_404, redirect, render
+
+from .forms import CommentForm, PostForm
+from .models import Comment, Follow, Group, Post, User
 from .utils import pagination
 
 
 def index(request):
-    posts = Post.objects.all()
+    posts = Post.objects.select_related('group').all()
     page_obj = pagination(request, posts, settings.VIEWABLE_POSTS)
     context = {
-        'page_obj': page_obj
+        'page_obj': page_obj,
+        'index': True
     }
     return render(request, 'posts/index.html', context)
 
@@ -106,7 +108,8 @@ def follow_index(request):
     posts = Post.objects.filter(author__following__user=request.user)
     page_obj = pagination(request, posts, settings.VIEWABLE_POSTS)
     context = {
-        'page_obj': page_obj
+        'page_obj': page_obj,
+        'follow': True
     }
     return render(request, 'posts/follow.html', context)
 
@@ -115,11 +118,8 @@ def follow_index(request):
 def profile_follow(request, username):
     user = request.user
     author = User.objects.get(username=username)
-    switch = Follow.objects.filter(
-        user=user,
-        author=author).exists()
-    if user != author and switch is False:
-        Follow.objects.create(
+    if user != author:
+        Follow.objects.get_or_create(
             user=user,
             author=author)
     return redirect('posts:profile', username=username)
@@ -129,5 +129,5 @@ def profile_follow(request, username):
 def profile_unfollow(request, username):
     Follow.objects.filter(
         user=request.user,
-        author=User.objects.get(username=username)).delete()
+        author=get_object_or_404(User, username=username)).delete()
     return redirect('posts:profile', username=username)

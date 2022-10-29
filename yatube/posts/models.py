@@ -108,10 +108,6 @@ class Follow(models.Model):
         related_name='following',
         verbose_name='Автор'
     )
-    follow_time = models.DateTimeField(
-        'Время подписки',
-        auto_now_add=True
-    )
 
     def __str__(self):
         return self.author.username[:25]
@@ -119,3 +115,6 @@ class Follow(models.Model):
     class Meta:
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'author'], name='name')
+        ]

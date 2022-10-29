@@ -1,10 +1,9 @@
 from http import HTTPStatus
 
 from django.contrib.auth import get_user_model
-from django.test import TestCase, Client
+from django.test import Client, TestCase
 from django.urls import reverse
-
-from posts.models import Post, Group
+from posts.models import Group, Post
 
 User = get_user_model()
 
@@ -58,7 +57,6 @@ class URLTests(TestCase):
             '/posts/1/edit/'
         ]
         for url in adress_auth_not_needed:
-            print(url)
             response = self.guest_client.get(url)
             self.assertEqual(response.status_code, HTTPStatus.OK)
             response = self.authorized_client.get(url)

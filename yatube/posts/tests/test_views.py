@@ -8,7 +8,7 @@ from django.core.cache import cache
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
-from posts.models import Group, Post, Follow
+from posts.models import Follow, Group, Post
 
 User = get_user_model()
 VIEWABLE_POSTS = settings.VIEWABLE_POSTS
@@ -333,6 +333,20 @@ class ViewTests(TestCase):
         self.assertEqual(
             list(response_author.context.get('page_obj').object_list),
             []
+        )
+
+    def test_unfollowing(self):
+        """
+        Тестируем отписки
+        """
+        Follow.objects.create(
+            user=self.user,
+            author=self.user_auth
+        )
+        Post.objects.create(
+            text='Пост для теста отображения',
+            author=self.user_auth,
+            group=Group.objects.get(slug='test_slug_2')
         )
         self.authorized_client.post(
             reverse(
