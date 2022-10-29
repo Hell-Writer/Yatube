@@ -8,6 +8,11 @@ from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 from posts.models import Comment, Group, Post
 
+# Ревьюеру:
+# Для сортировки импортов я использую isort
+# Вроде бы он работает по PEP8
+# Поэтому прошу уточнить, где именно сортировка неверная
+
 User = get_user_model()
 TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
 
@@ -144,10 +149,15 @@ class PostFormTests(TestCase):
                 text='Тестовый текст для рисунка'
             ).exists()
         )
+# Ревьюеру:
+# Почему-то название картинки в базе немного меняется каждый раз
+# Поэтому я не могу в фильтр подставить параметр image
+# Вместо этого я просто проверяю существование картинки в базе
+# через нижестоящий assertIsNotNone
         self.assertIsNotNone((Post.objects.get(
             text='Тестовый текст для рисунка'
         ).image))
-
+ 
     def test_comment_form(self):
         """Тестируем добавление комментариев"""
         form_data = {
