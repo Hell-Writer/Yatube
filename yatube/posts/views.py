@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.cache import cache_page
 from django.shortcuts import get_object_or_404, render, redirect
 from .forms import PostForm, CommentForm
 from .models import Group, Post, User, Comment, Follow
@@ -117,8 +116,8 @@ def profile_follow(request, username):
     user = request.user
     author = User.objects.get(username=username)
     switch = Follow.objects.filter(
-            user=user,
-            author=author).exists()
+        user=user,
+        author=author).exists()
     if user != author and switch is False:
         Follow.objects.create(
             user=user,
@@ -128,7 +127,6 @@ def profile_follow(request, username):
 
 @login_required
 def profile_unfollow(request, username):
-    
     Follow.objects.filter(
         user=request.user,
         author=User.objects.get(username=username)).delete()

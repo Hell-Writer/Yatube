@@ -325,7 +325,7 @@ class ViewTests(TestCase):
             reverse(
                 'posts:follow_index'
             )
-        )        
+        )
         self.assertEqual(
             response_user.context.get('page_obj').object_list[0].text,
             'Пост для теста отображения'
