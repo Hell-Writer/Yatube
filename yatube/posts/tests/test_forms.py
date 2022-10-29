@@ -157,7 +157,7 @@ class PostFormTests(TestCase):
         self.assertIsNotNone((Post.objects.get(
             text='Тестовый текст для рисунка'
         ).image))
- 
+
     def test_comment_form(self):
         """Тестируем добавление комментариев"""
         form_data = {
