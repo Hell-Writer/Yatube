@@ -8,11 +8,6 @@ from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 from posts.models import Comment, Group, Post
 
-# Ревьюеру:
-# Для сортировки импортов я использую isort
-# Вроде бы он работает по PEP8
-# Поэтому прошу уточнить, где именно сортировка неверная
-
 User = get_user_model()
 TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
 
@@ -104,7 +99,8 @@ class PostFormTests(TestCase):
         self.assertEqual(Post.objects.count(), posts_count)
         self.assertTrue(
             Post.objects.filter(
-                text='Изменённый Тестовый текст для формы'
+                text='Изменённый Тестовый текст для формы',
+                image='posts/small.gif'
             ).exists()
         )
         response = self.user_author.get(
@@ -131,7 +127,7 @@ class PostFormTests(TestCase):
             b'\x0A\x00\x3B'
         )
         uploaded = SimpleUploadedFile(
-            name='small.gif',
+            name='small2.gif',
             content=small_gif,
             content_type='image/gif'
         )
@@ -146,14 +142,10 @@ class PostFormTests(TestCase):
         )
         self.assertTrue(
             Post.objects.filter(
-                text='Тестовый текст для рисунка'
+                text='Тестовый текст для рисунка',
+                image='posts/small2.gif'
             ).exists()
         )
-# Ревьюеру:
-# Почему-то название картинки в базе немного меняется каждый раз
-# Поэтому я не могу в фильтр подставить параметр image
-# Вместо этого я просто проверяю существование картинки в базе
-# через нижестоящий assertIsNotNone
         self.assertIsNotNone((Post.objects.get(
             text='Тестовый текст для рисунка'
         ).image))
